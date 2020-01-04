@@ -17,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1;
+    private static final float MIN_DISTANCE = 10;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private ArrayList<Toilet> nearbyToilets;
@@ -84,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         markNearbyToilets();
     }
 
@@ -108,7 +109,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             for (Toilet toilet : nearbyToilets) {
                 Marker toiletMarker = mMap.addMarker(new MarkerOptions()
                         .position(toilet.getLocation())
-                        .title(toilet.getName()));
+                        .title(toilet.getName())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.toilet_small)));
                 toiletMarker.setTag(toilet.getName());
             }
         }
