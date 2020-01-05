@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -126,16 +127,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void markNearbyToilets() {
         if (nearbyToilets != null) {
             for (Toilet toilet : nearbyToilets) {
+
+                BitmapDescriptor bitmapDescriptor;
+
+                switch (toilet.getGender()) {
+                    case "male":
+                        bitmapDescriptor = BitmapDescriptorFactory
+                                .fromResource(R.drawable.toilet_small);
+                        break;
+                    case "female":
+                        bitmapDescriptor = BitmapDescriptorFactory
+                                .fromResource(R.drawable.toilet_female_small);
+                        break;
+                    case "unisex":
+                        bitmapDescriptor = BitmapDescriptorFactory
+                                .fromResource(R.drawable.toilet_unisex_small);
+                        break;
+                    default:
+                        bitmapDescriptor = BitmapDescriptorFactory
+                                .fromResource(R.drawable.toilet_neutral_small);
+                        break;
+                }
                 Marker toiletMarker = mMap.addMarker(new MarkerOptions()
                         .position(toilet.getLocation())
                         .title(toilet.getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.toilet_small)));
+                        .icon(bitmapDescriptor));
                 toiletMarker.setTag(toilet);
             }
         }
     }
 
-    private void updateLocationToArray(Location location){
+    private void updateLocationToArray(Location location) {
         this.coordinates[0] = location.getLatitude();
         this.coordinates[1] = location.getLongitude();
     }
