@@ -8,9 +8,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.baskerville.toilocate.classes.MockToilets;
 import com.baskerville.toilocate.classes.Toilet;
@@ -30,13 +34,21 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 10;
+    private static final float MIN_DISTANCE = 5;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private double[] coordinates = new double[2];
     private ArrayList<Toilet> nearbyToilets;
 
+    private ArrayList<Toilet> toiletCards;
+
     private FloatingActionButton addToilet;
+
+    private TextView recyclerTitleText;
+    private LinearLayout linearLayoutRecycler;
+
+     RecyclerView recyclerView;
+     Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +79,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME,
                 MIN_DISTANCE, this);
 
+
+
         addToilet = findViewById(R.id.addToiletFab);
         Bundle currentLocationBundle = new Bundle();
         currentLocationBundle.putDoubleArray("coordinates", coordinates);
@@ -74,9 +88,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Intent intent = new Intent(MapsActivity.this, AddToilet.class);
             intent.putExtras(currentLocationBundle);
             startActivity(intent);
+//            nearbyToilets.remove(0);
+//            adapter.notifyDataSetChanged();
             return;
         });
 
+        linearLayoutRecycler = findViewById(R.id.linearLayoutRecycler);
+
+        recyclerTitleText = findViewById(R.id.textViewRecyclerTitle);
+        toiletCards = new ArrayList<>();
+        recyclerTitleText.setOnClickListener(view -> {
+            if(toiletCards.isEmpty()) {
+                toiletCards.addAll(nearbyToilets);
+            } else {
+                toiletCards.clear();
+            }
+            adapter.notifyDataSetChanged();
+        });
+
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new Adapter(this, toiletCards);
+        recyclerView.setAdapter(adapter);
     }
 
 
@@ -97,6 +131,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.setPadding(0,0,0, linearLayoutRecycler.getHeight());
         mMap.setMyLocationEnabled(true);
     }
 
@@ -107,6 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         markNearbyToilets();
         updateLocationToArray(location);
+        mMap.setPadding(0,0,0, linearLayoutRecycler.getHeight());
     }
 
     @Override
