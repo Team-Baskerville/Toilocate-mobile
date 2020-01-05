@@ -2,6 +2,7 @@ package com.baskerville.toilocate;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final float MIN_DISTANCE = 10;
     private GoogleMap mMap;
     private LocationManager locationManager;
+    private double[] coordinates = new double[2];
     private ArrayList<Toilet> nearbyToilets;
+
+    private FloatingActionButton addToilet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +50,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
-        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             return;
         }
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME,
+                MIN_DISTANCE, this);
+
+        addToilet = findViewById(R.id.addToiletFab);
+        Bundle currentLocationBundle = new Bundle();
+        currentLocationBundle.putDoubleArray("coordinates", coordinates);
+        addToilet.setOnClickListener((view) -> {
+            Intent intent = new Intent(MapsActivity.this, AddToilet.class);
+            intent.putExtras(currentLocationBundle);
+            startActivity(intent);
+            return;
+        });
 
     }
 
@@ -87,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         markNearbyToilets();
+        updateLocationToArray(location);
     }
 
     @Override
@@ -110,10 +129,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Marker toiletMarker = mMap.addMarker(new MarkerOptions()
                         .position(toilet.getLocation())
                         .title(toilet.getName())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.toilet_small)));
-                toiletMarker.setTag(toilet.getName());
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.toilet_small)));
+                toiletMarker.setTag(toilet);
             }
         }
+    }
 
+    private void updateLocationToArray(Location location){
+        this.coordinates[0] = location.getLatitude();
+        this.coordinates[1] = location.getLongitude();
     }
 }
