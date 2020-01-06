@@ -31,6 +31,10 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_toilet);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Add Toilet");
+
         imageViewPhoto = findViewById(R.id.imageViewPhoto);
 
         fabTakePhoto = findViewById(R.id.fabPhoto);
@@ -126,5 +130,11 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

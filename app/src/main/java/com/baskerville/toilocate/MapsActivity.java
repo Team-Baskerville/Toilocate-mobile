@@ -254,8 +254,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 markNearbyToilets();
                 toiletCards.clear();
-                toiletCards.addAll(nearbyToilets);
-                adapter.notifyDataSetChanged();
+//                toiletCards.addAll(nearbyToilets);
+//                adapter.notifyDataSetChanged();
                 Log.i("Yo Response", response.body().getPayload().toString());
 
             }

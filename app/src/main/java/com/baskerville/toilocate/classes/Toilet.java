@@ -28,8 +28,8 @@ public class Toilet {
         this.name = toiletDTO.getName();
         this.rating = Float.parseFloat(toiletDTO.getRating());
         this.gender = toiletDTO.getGender() == null ? "undefined" : toiletDTO.getGender();
-        this.location = new LatLng(toiletDTO.getLocation().getCoordinates()[0],
-                toiletDTO.getLocation().getCoordinates()[1]);
+        this.location = new LatLng(toiletDTO.getLocation().getCoordinates()[1],
+                toiletDTO.getLocation().getCoordinates()[0]);
     }
 
 
