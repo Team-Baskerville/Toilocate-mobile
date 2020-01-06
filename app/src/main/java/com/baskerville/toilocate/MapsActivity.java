@@ -31,7 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 5;
@@ -131,8 +131,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.setPadding(0,0,0, linearLayoutRecycler.getHeight());
         mMap.setMyLocationEnabled(true);
+        mMap.setOnMarkerClickListener(this);
     }
 
 
@@ -142,7 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         markNearbyToilets();
         updateLocationToArray(location);
-        mMap.setPadding(0,0,0, linearLayoutRecycler.getHeight());
     }
 
     @Override
@@ -196,5 +195,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void updateLocationToArray(Location location) {
         this.coordinates[0] = location.getLatitude();
         this.coordinates[1] = location.getLongitude();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Bundle toiletDetailsBundle = new Bundle();
+        toiletDetailsBundle.putString("name", ((Toilet) marker.getTag()).getName());
+        Intent toiletDetailsIntent = new Intent(MapsActivity.this, ToiletDetails.class);
+        toiletDetailsIntent.putExtras(toiletDetailsBundle);
+        startActivity(toiletDetailsIntent);
+        return false;
     }
 }
