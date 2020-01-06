@@ -1,5 +1,8 @@
 package com.baskerville.toilocate.classes;
 
+import androidx.annotation.NonNull;
+
+import com.baskerville.toilocate.dto.ToiletDTO;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Toilet {
@@ -19,6 +22,14 @@ public class Toilet {
         this.description = description;
         this.rating = rating;
         this.location = new LatLng(lat, lng);
+    }
+
+    public Toilet(ToiletDTO toiletDTO) {
+        this.name = toiletDTO.getName();
+        this.rating = Float.parseFloat(toiletDTO.getRating());
+        this.gender = toiletDTO.getGender() == null ? "undefined" : toiletDTO.getGender();
+        this.location = new LatLng(toiletDTO.getLocation().getCoordinates()[0],
+                toiletDTO.getLocation().getCoordinates()[1]);
     }
 
 
@@ -60,5 +71,14 @@ public class Toilet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("name: " + name).append(", location : [").append(location.latitude)
+                .append(",").append(location.longitude);
+        return sb.toString();
     }
 }

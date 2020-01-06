@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,8 +17,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.classes.MockToilets;
 import com.baskerville.toilocate.classes.Toilet;
+import com.baskerville.toilocate.dto.ResponseDTO;
+import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,25 +35,29 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 5;
+    private static Retrofit retrofit = null;
+    private RecyclerView recyclerView;
+    private Adapter adapter;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private double[] coordinates = new double[2];
     private ArrayList<Toilet> nearbyToilets;
-
     private ArrayList<Toilet> toiletCards;
-
     private FloatingActionButton addToilet;
-
     private TextView recyclerTitleText;
     private LinearLayout linearLayoutRecycler;
-
-     RecyclerView recyclerView;
-     Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        nearbyToilets = MockToilets.getMockToilets();
+        nearbyToilets = new ArrayList<>();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -80,7 +89,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 MIN_DISTANCE, this);
 
 
-
         addToilet = findViewById(R.id.addToiletFab);
         Bundle currentLocationBundle = new Bundle();
         currentLocationBundle.putDoubleArray("coordinates", coordinates);
@@ -98,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerTitleText = findViewById(R.id.textViewRecyclerTitle);
         toiletCards = new ArrayList<>();
         recyclerTitleText.setOnClickListener(view -> {
-            if(toiletCards.isEmpty()) {
+            if (toiletCards.isEmpty()) {
                 toiletCards.addAll(nearbyToilets);
             } else {
                 toiletCards.clear();
@@ -111,6 +119,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter(this, toiletCards);
         recyclerView.setAdapter(adapter);
+
+        getData();
+
+        Log.i("Yo Chameera", "Yo yo");
     }
 
 
@@ -133,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setMyLocationEnabled(true);
         mMap.setOnMarkerClickListener(this);
+
     }
 
 
@@ -140,7 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-        markNearbyToilets();
+//        markNearbyToilets();
         updateLocationToArray(location);
     }
 
@@ -160,7 +173,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void markNearbyToilets() {
+        Log.i("Mark Nerby ", nearbyToilets.toString());
         if (nearbyToilets != null) {
+            mMap.clear();
             for (Toilet toilet : nearbyToilets) {
 
                 BitmapDescriptor bitmapDescriptor;
@@ -205,5 +220,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         toiletDetailsIntent.putExtras(toiletDetailsBundle);
         startActivity(toiletDetailsIntent);
         return false;
+    }
+
+    private void getData() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        ToiletService toiletService = retrofit.create(ToiletService.class);
+
+        Log.i("Yo Friend", "yum yum");
+
+
+        List<Toilet> toiletList = new ArrayList<>();
+
+        Call<ResponseDTO> getAllToiletsCall = toiletService.getAllToilets();
+        getAllToiletsCall.enqueue(new Callback<ResponseDTO>() {
+            @Override
+            public void onResponse(Call<ResponseDTO> call, Response<ResponseDTO> response) {
+
+                if (!response.isSuccessful()) {
+                    Log.i("Yo Response", Integer.toString(response.code()));
+                    return;
+                }
+
+                List<ToiletDTO> toiletDTOList = response.body().getPayload().getToilets();
+                nearbyToilets.clear();
+                for (ToiletDTO toiletDto : toiletDTOList) {
+                    nearbyToilets.add(new Toilet(toiletDto));
+                }
+
+                markNearbyToilets();
+                toiletCards.clear();
+                toiletCards.addAll(nearbyToilets);
+                adapter.notifyDataSetChanged();
+                Log.i("Yo Response", response.body().getPayload().toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDTO> call, Throwable t) {
+                Log.i("Yo Response", t.getMessage());
+
+
+            }
+        });
+
+
     }
 }
