@@ -4,12 +4,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.baskerville.toilocate.dto.ToiletDTO;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -23,10 +34,14 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     FloatingActionButton fabTakePhoto;
     ImageView imageViewPhoto;
+    EditText editTextName;
+    CheckBox checkBoxSink, checkBoxMirror, checkBoxShower, checkBoxUrineTank;
+    ToiletDTO toiletDTO;
     private int pic_id = 111;
     private double[] lastCoordinates;
     private MapView mMapView;
     private RadioGroup radioGroup;
+    private Button btnSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +60,15 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
             startActivityForResult(camera_intent, pic_id);
         });
 
-        initGoogleMap(savedInstanceState);
-        lastCoordinates = getIntent().getExtras().getDoubleArray("coordinates");
 
-        radioGroup = findViewById(R.id.radioGroupGender);
-        radioGroup.check(R.id.radioButtonUni);
+        setupNameEditText();
+        setupRadioGroup();
+        setupSubmitButton();
+
+        lastCoordinates = getIntent().getExtras().getDoubleArray("coordinates");
+        initGoogleMap(savedInstanceState);
+
+        toiletDTO = new ToiletDTO();
     }
 
     private void initGoogleMap(Bundle savedInstanceState) {
@@ -64,6 +83,59 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+    }
+
+
+    private void setupRadioGroup() {
+        radioGroup = findViewById(R.id.radioGroupGender);
+        radioGroup.check(R.id.radioButtonUni);
+        radioGroup.setOnCheckedChangeListener((radioGroup, checkerId) ->
+                findViewById(R.id.checkBoxUrineTanks).setEnabled(checkerId != R.id.radioButtonFemale));
+    }
+
+    private void setupNameEditText() {
+        editTextName = findViewById(R.id.editTextName);
+        editTextName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                btnSubmit.setEnabled(editable.length() > 0);
+            }
+        });
+    }
+
+    private void setupSubmitButton() {
+        btnSubmit = findViewById(R.id.btnSubmit);
+        btnSubmit.setEnabled(false);
+        btnSubmit.setOnClickListener(view -> {
+
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddToilet.this);
+            View mView = getLayoutInflater().inflate(R.layout.rating_dialog, null);
+            final RatingBar toiletRating = mView.findViewById(R.id.ratingBarDialog);
+            Button btnSubmitDialog = mView.findViewById(R.id.buttonSubmitDialog);
+
+            btnSubmitDialog.setOnClickListener(view1 -> {
+                Toast.makeText(AddToilet.this, Float.toString(toiletRating.getRating()), Toast.LENGTH_SHORT).show();
+            });
+
+            mBuilder.setView(mView);
+            AlertDialog dialog =  mBuilder.create();
+            dialog.show();
+
+
+
+            toiletDTO.setName(editTextName.getText().toString());
+            Log.i("ToiletDTO", toiletDTO.getName());
+        });
     }
 
 
@@ -114,6 +186,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         //map.setMyLocationEnabled(true);
         map.addMarker(new MarkerOptions().position(new LatLng(lastCoordinates[0], lastCoordinates[1])).title("New Toilet"));
         map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastCoordinates[0], lastCoordinates[1])));
+        Log.i("Move camera", lastCoordinates[0] + ", " + lastCoordinates[1]);
         map.animateCamera(CameraUpdateFactory.zoomTo(17));
     }
 
