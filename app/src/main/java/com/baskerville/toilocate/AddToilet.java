@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +24,9 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     FloatingActionButton fabTakePhoto;
     ImageView imageViewPhoto;
     private int pic_id = 111;
-    private double[] lastCordinates;
+    private double[] lastCoordinates;
     private MapView mMapView;
+    private RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         getSupportActionBar().setTitle("Add Toilet");
 
         imageViewPhoto = findViewById(R.id.imageViewPhoto);
-
         fabTakePhoto = findViewById(R.id.fabPhoto);
-
         fabTakePhoto.setOnClickListener(view -> {
             //submit data or take photograph
             Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -46,7 +46,10 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         });
 
         initGoogleMap(savedInstanceState);
-        lastCordinates = getIntent().getExtras().getDoubleArray("coordinates");
+        lastCoordinates = getIntent().getExtras().getDoubleArray("coordinates");
+
+        radioGroup = findViewById(R.id.radioGroupGender);
+        radioGroup.check(R.id.radioButtonUni);
     }
 
     private void initGoogleMap(Bundle savedInstanceState) {
@@ -109,8 +112,8 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         //map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         //map.setMyLocationEnabled(true);
-        map.addMarker(new MarkerOptions().position(new LatLng(lastCordinates[0], lastCordinates[1])).title("New Toilet"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastCordinates[0], lastCordinates[1])));
+        map.addMarker(new MarkerOptions().position(new LatLng(lastCoordinates[0], lastCoordinates[1])).title("New Toilet"));
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastCoordinates[0], lastCoordinates[1])));
         map.animateCamera(CameraUpdateFactory.zoomTo(17));
     }
 
