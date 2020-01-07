@@ -21,6 +21,7 @@ import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.classes.Toilet;
 import com.baskerville.toilocate.dto.ResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.dto.ToiletSearchDTO;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -237,8 +238,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.i("Yo Go", coordinates[1] + "," + coordinates[0]);
 
-        Call<ResponseDTO> getNearbyToiletsCall = toiletService.getNearbyToilets(coordinates[1],
-                coordinates[0], Config.MAX_DISTANCE);
+        Call<ResponseDTO> getNearbyToiletsCall = toiletService.getNearbyToilets(new ToiletSearchDTO(
+                coordinates[1], coordinates[0], Config.MAX_DISTANCE
+        ));
         getNearbyToiletsCall.enqueue(new Callback<ResponseDTO>() {
             @Override
             public void onResponse(Call<ResponseDTO> call, Response<ResponseDTO> response) {
