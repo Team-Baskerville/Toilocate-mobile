@@ -3,4 +3,8 @@ package com.baskerville.toilocate.classes;
 public class Config {
 
     public static String BASE_URL = "http://34.235.227.152:3000/";
+
+    public static double MAX_DISTANCE = 200;
+
+    public static int DIST_EXPANSION_STEP = 100;
 }
