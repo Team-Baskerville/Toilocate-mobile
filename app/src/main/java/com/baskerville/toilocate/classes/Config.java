@@ -7,4 +7,6 @@ public class Config {
     public static double MAX_DISTANCE = 200;
 
     public static int DIST_EXPANSION_STEP = 100;
+
+    public static String TEST_IMG_URL = "https://homepages.cae.wisc.edu/~ece533/images/airplane.png";
 }

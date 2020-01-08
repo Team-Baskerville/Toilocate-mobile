@@ -2,13 +2,17 @@ package com.baskerville.toilocate;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.dto.ToiletLiteDTO;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -17,6 +21,7 @@ public class ToiletDetails extends AppCompatActivity {
 
     CollapsingToolbarLayout toolbarLayout;
     ToiletLiteDTO toiletLiteDTO;
+    ImageView toiletImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,11 @@ public class ToiletDetails extends AppCompatActivity {
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
 //        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
+
+        toiletImageView = findViewById(R.id.toolbarImageDetails);
+        Glide.with(this).load(Config.TEST_IMG_URL)
+                .apply(new RequestOptions().override(200, 300))
+                .into(toiletImageView);
 
         populateView();
     }
