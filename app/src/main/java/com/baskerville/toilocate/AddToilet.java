@@ -2,7 +2,9 @@ package com.baskerville.toilocate;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,8 +21,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import com.baskerville.toilocate.classes.Config;
+import com.baskerville.toilocate.dto.ImagePayloadDTO;
+import com.baskerville.toilocate.dto.ImageResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -28,6 +35,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import id.zelory.compressor.Compressor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -42,6 +64,9 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mMapView;
     private RadioGroup radioGroup;
     private Button btnSubmit;
+    private Uri photoURI;
+
+    private Retrofit retrofit = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +78,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         getSupportActionBar().setTitle("Add Toilet");
 
         imageViewPhoto = findViewById(R.id.imageViewPhoto);
-        fabTakePhoto = findViewById(R.id.fabPhoto);
-        fabTakePhoto.setOnClickListener(view -> {
-            //submit data or take photograph
-            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(camera_intent, pic_id);
-        });
-
-
+        setupCameraButton();
         setupNameEditText();
         setupRadioGroup();
         setupSubmitButton();
@@ -83,6 +101,40 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+    }
+
+    private void setupCameraButton(){
+        fabTakePhoto = findViewById(R.id.fabPhoto);
+        fabTakePhoto.setOnClickListener(view -> {
+            //submit data or take photograph
+//            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            startActivityForResult(camera_intent, pic_id);
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(view.getContext().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(view.getContext(),
+                            "com.baskerville.toilocate.provider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, pic_id);
+                }
+            }
+            //take photograph
+            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(camera_intent, pic_id);
+        });
+
     }
 
 
@@ -123,15 +175,17 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
             final RatingBar toiletRating = mView.findViewById(R.id.ratingBarDialog);
             Button btnSubmitDialog = mView.findViewById(R.id.buttonSubmitDialog);
 
+            mBuilder.setView(mView);
+            AlertDialog dialog = mBuilder.create();
+
+
             btnSubmitDialog.setOnClickListener(view1 -> {
-                Toast.makeText(AddToilet.this, Float.toString(toiletRating.getRating()), Toast.LENGTH_SHORT).show();
+                toiletDTO.setRating(String.valueOf(toiletRating.getRating()));
+                saveNewToilet();
+                dialog.dismiss();
             });
 
-            mBuilder.setView(mView);
-            AlertDialog dialog =  mBuilder.create();
             dialog.show();
-
-
 
             toiletDTO.setName(editTextName.getText().toString());
             Log.i("ToiletDTO", toiletDTO.getName());
@@ -143,10 +197,12 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == pic_id) {
-            Bitmap photo = (Bitmap) data.getExtras()
-                    .get("data");
+            if (requestCode == pic_id && resultCode == RESULT_OK) {
+                //Perform any task using uri
+                //For example set this URI to fill an ImageView like below
+                this.imageViewPhoto.setImageURI(photoURI);
+            }
 
-            imageViewPhoto.setImageBitmap(photo);
         }
     }
 
@@ -213,4 +269,128 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         onBackPressed();
         return true;
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        return image;
+    }
+
+    private void saveNewToilet(){
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        ToiletService toiletService = retrofit.create(ToiletService.class);
+
+        //Create a file object using file path
+        File file1 = new File(this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + photoURI.getPath().substring(19));
+
+        File file = null;
+        try {
+            file = new Compressor(this)
+                    .setMaxWidth(640)
+                    .setMaxHeight(480)
+                    .setQuality(75)
+                    .setCompressFormat(Bitmap.CompressFormat.WEBP)
+    //                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+    //                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                    .compressToFile(file1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Create a request body with file and image media type
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        // Create MultipartBody.Part using file request-body,file name and part name
+        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
+//        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), toiletDTO.getName());
+
+
+//        Uri photoURI = FileProvider.getUriForFile(this.getContext(),
+//                "com.watson.android.fileprovider",
+//                file);
+
+        Call<ImageResponseDTO> call = toiletService.uploadImage(part, toiletDTO.getName());
+        Log.i("Compose Request", "Request name: "+toiletDTO.getName());
+
+        call.enqueue(new Callback<ImageResponseDTO>() {
+            @Override
+            public void onResponse(Call<ImageResponseDTO> call, Response<ImageResponseDTO> response) {
+                Log.d("Yo incoming", "Incoming:" + response.body().toString());
+                try {
+
+                    String data = response.body().getPayload();
+                    Log.i("Yo image res", "Image upload response received: " + data);
+
+
+//                    Call<PlaceAddResponse> callPlace = placeApiService.savePlaceSeperate(
+//                            newPlace.getName(),
+//                            new String[]{
+//                                    newPlace.getLocation().coordinates().get(0).toString(),
+//                                    newPlace.getLocation().coordinates().get(1).toString()},
+//                            newPlace.getDescription(),
+//                            newPlace.getOtherNames().get(0),
+////                            new String[]{newPlace.getType().get(0)},
+//                            newPlace.getType().get(0),
+//                            newPlace.getId(), data[0]);
+//                    callPlace.enqueue(new Callback<PlaceAddResponse>() {
+//                        @Override
+//                        public void onResponse(Call<PlaceAddResponse> call, Response<PlaceAddResponse> response) {
+//                            try {
+//                                Log.d("message", "Incoming:" + response.body().getMessage());
+////                                String[] data = response.body().getData();
+//                                Log.d(TAG, "Place add response received: " + response.body().getMessage());
+//
+//                                for (Fragment fragment : getFragmentManager().getFragments()) {
+//                                    getFragmentManager().beginTransaction().remove(fragment).commit();
+//                                }
+//
+//                                HomeFragment homeFragment = new HomeFragment();
+//                                BottomNavigationViewHelper.replaceFragment(getActivity(), homeFragment, R.id.relLayout2, false);
+//
+//
+//                            } catch (NullPointerException e) {
+//                                Log.d(TAG, e.getMessage());
+//                            }
+//
+////                for (Fragment fragment : getFragmentManager().getFragments()) {
+////                    getFragmentManager().beginTransaction().remove(fragment).commit();
+////                }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<PlaceAddResponse> call, Throwable throwable) {
+//                            Log.e(TAG, throwable.toString());
+//                        }
+//                    });
+//
+
+                } catch (NullPointerException e) {
+                    Log.i("Yo image error", e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ImageResponseDTO> call, Throwable throwable) {
+                Log.e("Yo image upload fail", throwable.toString());
+            }
+        });
+    }
+
 }
