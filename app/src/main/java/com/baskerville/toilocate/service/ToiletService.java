@@ -2,6 +2,8 @@ package com.baskerville.toilocate.service;
 
 import com.baskerville.toilocate.dto.ImageResponseDTO;
 import com.baskerville.toilocate.dto.ResponseDTO;
+import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.dto.ToiletSaveResDTO;
 import com.baskerville.toilocate.dto.ToiletSearchDTO;
 
 import okhttp3.MultipartBody;
@@ -32,6 +34,9 @@ public interface ToiletService {
     @POST("image")
     @Multipart
     Call<ImageResponseDTO> uploadImage(@Part MultipartBody.Part image, @Query("name") String name);
+
+    @POST("add")
+    Call<ToiletSaveResDTO> saveToilet(@Body ToiletDTO toiletDTO);
 
 
 

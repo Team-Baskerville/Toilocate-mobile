@@ -120,10 +120,23 @@
                     android:text="Shower" />
 
                 <CheckBox
+                    android:id="@+id/checkBoxCommode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Commode" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxSquat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Squat" />
+
+                <CheckBox
                     android:id="@+id/checkBoxUrineTanks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Urine Tank" />
+
             </LinearLayout>
         </LinearLayout>
 

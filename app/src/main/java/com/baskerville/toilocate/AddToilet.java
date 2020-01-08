@@ -24,9 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.baskerville.toilocate.classes.Config;
-import com.baskerville.toilocate.dto.ImagePayloadDTO;
 import com.baskerville.toilocate.dto.ImageResponseDTO;
+import com.baskerville.toilocate.dto.LocationDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.dto.ToiletDescriptionDTO;
+import com.baskerville.toilocate.dto.ToiletSaveResDTO;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,7 +62,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     CheckBox checkBoxSink, checkBoxMirror, checkBoxShower, checkBoxUrineTank;
     ToiletDTO toiletDTO;
     private int pic_id = 111;
-    private double[] lastCoordinates;
+    private double[] lastCoordinates = new double[2];
     private MapView mMapView;
     private RadioGroup radioGroup;
     private Button btnSubmit;
@@ -77,16 +79,19 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Add Toilet");
 
+        toiletDTO = new ToiletDTO();
+        lastCoordinates = getIntent().getExtras().getDoubleArray("coordinates");
+
         imageViewPhoto = findViewById(R.id.imageViewPhoto);
         setupCameraButton();
         setupNameEditText();
         setupRadioGroup();
         setupSubmitButton();
 
-        lastCoordinates = getIntent().getExtras().getDoubleArray("coordinates");
+
         initGoogleMap(savedInstanceState);
 
-        toiletDTO = new ToiletDTO();
+
     }
 
     private void initGoogleMap(Bundle savedInstanceState) {
@@ -103,7 +108,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
     }
 
-    private void setupCameraButton(){
+    private void setupCameraButton() {
         fabTakePhoto = findViewById(R.id.fabPhoto);
         fabTakePhoto.setOnClickListener(view -> {
             //submit data or take photograph
@@ -141,8 +146,11 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     private void setupRadioGroup() {
         radioGroup = findViewById(R.id.radioGroupGender);
         radioGroup.check(R.id.radioButtonUni);
-        radioGroup.setOnCheckedChangeListener((radioGroup, checkerId) ->
-                findViewById(R.id.checkBoxUrineTanks).setEnabled(checkerId != R.id.radioButtonFemale));
+        radioGroup.setOnCheckedChangeListener((radioGroup, checkerId) -> {
+            CheckBox checkBoxUrineTanks = findViewById(R.id.checkBoxUrineTanks);
+            checkBoxUrineTanks.setChecked(false);
+            checkBoxUrineTanks.setEnabled(checkerId != R.id.radioButtonFemale);
+        });
     }
 
     private void setupNameEditText() {
@@ -168,6 +176,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     private void setupSubmitButton() {
         btnSubmit = findViewById(R.id.btnSubmit);
         btnSubmit.setEnabled(false);
+        setFormDataToDTO();
         btnSubmit.setOnClickListener(view -> {
 
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddToilet.this);
@@ -285,7 +294,43 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         return image;
     }
 
-    private void saveNewToilet(){
+    private void setFormDataToDTO() {
+        toiletDTO.setName(editTextName.getText().toString());
+
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setType("point");
+        locationDTO.setCoordinates(new Double[]{lastCoordinates[1], lastCoordinates[0]});
+        toiletDTO.setLocation(locationDTO);
+
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case (R.id.radioButtonMale):
+                toiletDTO.setGender("male");
+                break;
+            case (R.id.radioButtonFemale):
+                toiletDTO.setGender("female");
+                break;
+            case (R.id.radioButtonUni):
+                toiletDTO.setGender("unisex");
+                break;
+        }
+
+        CheckBox urineTank = findViewById(R.id.checkBoxUrineTanks);
+        CheckBox waterSink = findViewById(R.id.checkBoxSink);
+        CheckBox mirror = findViewById(R.id.checkBoxMirror);
+        CheckBox shower = findViewById(R.id.checkBoxShower);
+        CheckBox squat = findViewById(R.id.checkBoxSquat);
+        CheckBox commode = findViewById(R.id.checkBoxCommode);
+
+        ToiletDescriptionDTO descriptionDTO = new ToiletDescriptionDTO(
+                urineTank.isChecked(), waterSink.isChecked(), mirror.isChecked(), shower.isChecked(),
+                squat.isChecked(), commode.isChecked());
+        toiletDTO.setDescription(descriptionDTO);
+
+
+    }
+
+    private void saveNewToilet() {
+        Log.i("Yo DTO so far", toiletDTO.toString());
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Config.BASE_URL)
@@ -305,8 +350,8 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                     .setMaxHeight(480)
                     .setQuality(75)
                     .setCompressFormat(Bitmap.CompressFormat.WEBP)
-    //                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-    //                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                    //                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                    //                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
                     .compressToFile(file1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -324,7 +369,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 //                file);
 
         Call<ImageResponseDTO> call = toiletService.uploadImage(part, toiletDTO.getName());
-        Log.i("Compose Request", "Request name: "+toiletDTO.getName());
+        Log.i("Compose Request", "Request name: " + toiletDTO.getName());
 
         call.enqueue(new Callback<ImageResponseDTO>() {
             @Override
@@ -334,18 +379,29 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
                     String data = response.body().getPayload();
                     Log.i("Yo image res", "Image upload response received: " + data);
+                    toiletDTO.setImagePath(data);
+                    Log.i("Yo DTO so so far", toiletDTO.toString());
 
+                    Call<ToiletSaveResDTO> toiletSaveCall = toiletService.saveToilet(toiletDTO);
+                    toiletSaveCall.enqueue(new Callback<ToiletSaveResDTO>() {
+                        @Override
+                        public void onResponse(Call<ToiletSaveResDTO> call,
+                                               Response<ToiletSaveResDTO> response) {
 
-//                    Call<PlaceAddResponse> callPlace = placeApiService.savePlaceSeperate(
-//                            newPlace.getName(),
-//                            new String[]{
-//                                    newPlace.getLocation().coordinates().get(0).toString(),
-//                                    newPlace.getLocation().coordinates().get(1).toString()},
-//                            newPlace.getDescription(),
-//                            newPlace.getOtherNames().get(0),
-////                            new String[]{newPlace.getType().get(0)},
-//                            newPlace.getType().get(0),
-//                            newPlace.getId(), data[0]);
+                            if (response.isSuccessful()) {
+                                Log.i("Yo yo save res", response.body().getMessage());
+                                Toast.makeText(AddToilet.this, response.body().getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ToiletSaveResDTO> call, Throwable t) {
+                            Log.i("Yo save error", t.getMessage());
+
+                        }
+                    });
+
 //                    callPlace.enqueue(new Callback<PlaceAddResponse>() {
 //                        @Override
 //                        public void onResponse(Call<PlaceAddResponse> call, Response<PlaceAddResponse> response) {
