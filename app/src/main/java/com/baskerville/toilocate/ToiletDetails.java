@@ -1,21 +1,22 @@
 package com.baskerville.toilocate;
 
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
-
-import com.baskerville.toilocate.R;
+import com.baskerville.toilocate.dto.ToiletLiteDTO;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class ToiletDetails extends AppCompatActivity {
 
     CollapsingToolbarLayout toolbarLayout;
+    ToiletLiteDTO toiletLiteDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,23 @@ public class ToiletDetails extends AppCompatActivity {
         });
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
-        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
+//        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
+
+        populateView();
+    }
+
+    private void populateView() {
+        RatingBar ratingBar = findViewById(R.id.ratingBarToiletDetails);
+        TextView textViewGender = findViewById(R.id.textViewDetailsGender);
+
+        toiletLiteDTO = (ToiletLiteDTO) getIntent().getSerializableExtra("toilet");
+
+        if (toiletLiteDTO != null) {
+            toolbarLayout.setTitle(toiletLiteDTO.getName());
+            ratingBar.setRating(toiletLiteDTO.getRating());
+            textViewGender.setText(String.format("%s TOILET",
+                    toiletLiteDTO.getGender().toUpperCase()));
+        }
     }
 
     @Override

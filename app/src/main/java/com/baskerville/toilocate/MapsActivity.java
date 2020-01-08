@@ -21,6 +21,7 @@ import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.classes.Toilet;
 import com.baskerville.toilocate.dto.ResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.dto.ToiletLiteDTO;
 import com.baskerville.toilocate.dto.ToiletSearchDTO;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -217,7 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle toiletDetailsBundle = new Bundle();
         toiletDetailsBundle.putString("name", ((Toilet) marker.getTag()).getName());
         Intent toiletDetailsIntent = new Intent(MapsActivity.this, ToiletDetails.class);
-        toiletDetailsIntent.putExtras(toiletDetailsBundle);
+     //   toiletDetailsIntent.putExtras(toiletDetailsBundle);
+        toiletDetailsIntent.putExtra("toilet", new ToiletLiteDTO((Toilet) marker.getTag()));
         startActivity(toiletDetailsIntent);
         return false;
     }
