@@ -12,6 +12,7 @@ public class Toilet {
     private LatLng location;
     private String gender;
     private float rating;
+    private String imagePath;
     private ToiletDescriptionDTO description;
 
     public Toilet() {
@@ -29,6 +30,7 @@ public class Toilet {
         this.name = toiletDTO.getName();
         this.rating = Float.parseFloat(toiletDTO.getRating());
         this.gender = toiletDTO.getGender() == null ? "undefined" : toiletDTO.getGender();
+        this.imagePath = toiletDTO.getImagePath();
         this.location = new LatLng(toiletDTO.getLocation().getCoordinates()[1],
                 toiletDTO.getLocation().getCoordinates()[0]);
         this.description = toiletDTO.getDescription();
@@ -65,6 +67,14 @@ public class Toilet {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public ToiletDescriptionDTO getDescription() {

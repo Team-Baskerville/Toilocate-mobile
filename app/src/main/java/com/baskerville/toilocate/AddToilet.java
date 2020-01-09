@@ -176,8 +176,8 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     private void setupSubmitButton() {
         btnSubmit = findViewById(R.id.btnSubmit);
         btnSubmit.setEnabled(false);
-        setFormDataToDTO();
         btnSubmit.setOnClickListener(view -> {
+            setFormDataToDTO();
 
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddToilet.this);
             View mView = getLayoutInflater().inflate(R.layout.rating_dialog, null);
@@ -195,9 +195,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
             });
 
             dialog.show();
-
-            toiletDTO.setName(editTextName.getText().toString());
-            Log.i("ToiletDTO", toiletDTO.getName());
         });
     }
 

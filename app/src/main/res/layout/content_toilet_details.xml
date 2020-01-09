@@ -31,7 +31,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayoutDetails"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -70,19 +70,20 @@
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="1dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageDetailsCommode"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:src="@drawable/sink_true"
                     app:civ_border_color="#1565C0"
                     app:civ_border_width="0dp" />
 
                 <TextView
                     android:id="@+id/textViewDetailsCommode"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Commode"
@@ -94,13 +95,14 @@
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="1dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imageDetailsSquat"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:src="@drawable/sink"
                     app:civ_border_width="0dp"
                     app:civ_border_color="#1565C0"/>
@@ -119,13 +121,14 @@
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="1dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imageDetailsSink"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:src="@drawable/sink"
                     app:civ_border_width="0dp"
                     app:civ_border_color="#1565C0"/>
@@ -139,46 +142,36 @@
                     android:textAlignment="center" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/imageDetailsMirror"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/sink"
-                    app:civ_border_width="0dp"
-                    app:civ_border_color="#1565C0"/>
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textViewDetailsMirror"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Mirror"
-                    android:textAlignment="center" />
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutDetails2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutDetails">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="2dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imageDetailsShower"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:src="@drawable/sink"
-                    app:civ_border_width="0dp"
-                    app:civ_border_color="#1565C0"/>
+                    app:civ_border_color="#1565C0"
+                    app:civ_border_width="0dp" />
 
                 <TextView
                     android:id="@+id/textViewDetailsShower"
@@ -194,23 +187,48 @@
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="2dp">
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/imageViewUrineTank"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    app:srcCompat="@drawable/toilet" />-->
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imageDetailsMirror"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/sink"
+                    app:civ_border_color="#1565C0"
+                    app:civ_border_width="0dp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <TextView
+                    android:id="@+id/textViewDetailsMirror"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mirror"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="2dp">
+
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/imageViewUrineTank"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    app:srcCompat="@drawable/toilet" />-->
+
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imageDetailsUrineTank"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:src="@drawable/toilet"
-                    app:civ_border_width="0dp"
-                    app:civ_border_color="#1565C0"/>
+                    app:civ_border_color="#1565C0"
+                    app:civ_border_width="0dp" />
 
                 <TextView
                     android:id="@+id/textViewDetailsUrineTank"
@@ -220,8 +238,6 @@
                     android:text="UrineTank"
                     android:textAlignment="center" />
             </LinearLayout>
-
-
         </LinearLayout>
 
         <RatingBar
@@ -232,7 +248,7 @@
             android:isIndicator="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutDetails" />
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutDetails2" />
 
         <TextView
             android:id="@+id/textViewDetailsRating"

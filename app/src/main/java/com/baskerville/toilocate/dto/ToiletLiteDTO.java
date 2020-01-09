@@ -8,14 +8,17 @@ public class ToiletLiteDTO implements Serializable {
 
     private String name;
     private String gender;
+    private String imagePath;
     private float rating;
     private ToiletDescriptionDTO description;
 
-    public ToiletLiteDTO(){}
+    public ToiletLiteDTO() {
+    }
 
-    public ToiletLiteDTO(Toilet toilet){
+    public ToiletLiteDTO(Toilet toilet) {
         this.name = toilet.getName();
         this.gender = toilet.getGender();
+        this.imagePath =  toilet.getImagePath();
         this.rating = toilet.getRating();
         this.description = toilet.getDescription();
     }
@@ -34,6 +37,14 @@ public class ToiletLiteDTO implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public float getRating() {

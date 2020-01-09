@@ -1,6 +1,7 @@
 package com.baskerville.toilocate;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -36,6 +37,8 @@ public class ToiletDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        toiletLiteDTO = (ToiletLiteDTO) getIntent().getSerializableExtra("toilet");
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +52,7 @@ public class ToiletDetails extends AppCompatActivity {
 //        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
 
         toiletImageView = findViewById(R.id.toolbarImageDetails);
-        Glide.with(this).load(Config.TEST_IMG_URL)
+        Glide.with(this).load(Config.BASE_URL+toiletLiteDTO.getImagePath())
                 .apply(new RequestOptions().override(200, 300))
                 .into(toiletImageView);
 
@@ -66,7 +69,7 @@ public class ToiletDetails extends AppCompatActivity {
         CircleImageView circleImageViewShower = findViewById(R.id.imageDetailsShower);
         CircleImageView circleImageViewUrineTank = findViewById(R.id.imageDetailsUrineTank);
 
-        toiletLiteDTO = (ToiletLiteDTO) getIntent().getSerializableExtra("toilet");
+        Log.i("Yo Toilet details ", toiletLiteDTO.getDescription().toString());
 
         if (toiletLiteDTO != null) {
             toolbarLayout.setTitle(toiletLiteDTO.getName());
@@ -81,10 +84,34 @@ public class ToiletDetails extends AppCompatActivity {
                     circleImageViewCommode.setImageResource(R.drawable.commode_false);
                 }
 
+                if(descriptionDTO.isSquat()) {
+                    circleImageViewSquat.setImageResource(R.drawable.squat_true);
+                } else {
+                    circleImageViewSquat.setImageResource(R.drawable.squat_false);
+                }
+
                 if(descriptionDTO.isWaterSink()) {
                     circleImageViewSink.setImageResource(R.drawable.sink_true);
                 } else {
                     circleImageViewSink.setImageResource(R.drawable.sink_false);
+                }
+
+                if(descriptionDTO.isShower()) {
+                    circleImageViewShower.setImageResource(R.drawable.shower_true);
+                } else {
+                    circleImageViewShower.setImageResource(R.drawable.shower_false);
+                }
+
+                if(descriptionDTO.isMirror()) {
+                    circleImageViewMirror.setImageResource(R.drawable.mirror_true);
+                } else {
+                    circleImageViewMirror.setImageResource(R.drawable.mirror_false);
+                }
+
+                if(descriptionDTO.isUrineTanks()) {
+                    circleImageViewUrineTank.setImageResource(R.drawable.urinal_true);
+                } else {
+                    circleImageViewUrineTank.setImageResource(R.drawable.urinal_false);
                 }
             }
         }
