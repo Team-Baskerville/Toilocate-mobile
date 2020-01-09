@@ -298,7 +298,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         toiletDTO.setName(editTextName.getText().toString());
 
         LocationDTO locationDTO = new LocationDTO();
-        locationDTO.setType("point");
+        locationDTO.setType("Point");
         locationDTO.setCoordinates(new Double[]{lastCoordinates[1], lastCoordinates[0]});
         toiletDTO.setLocation(locationDTO);
 
