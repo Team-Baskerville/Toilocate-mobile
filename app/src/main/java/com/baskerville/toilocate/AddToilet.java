@@ -209,7 +209,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                 //For example set this URI to fill an ImageView like below
                 this.imageViewPhoto.setImageURI(photoURI);
             }
-
         }
     }
 
