@@ -111,4 +111,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="username">Enter Your Name</string>
+    <string name="userEmail">Enter your email address</string>
+    <string name="password">******</string>
 </resources>

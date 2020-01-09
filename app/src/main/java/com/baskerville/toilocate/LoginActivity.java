@@ -64,5 +64,17 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSignUpDialog();
+            }
+        });
+    }
+
+    private void openSignUpDialog() {
+        DialogSignup dialogSignup = new DialogSignup();
+        dialogSignup.show(getSupportFragmentManager(), "signup dialog");
     }
 }
