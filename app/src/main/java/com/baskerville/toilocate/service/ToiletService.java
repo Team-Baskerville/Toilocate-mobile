@@ -1,6 +1,8 @@
 package com.baskerville.toilocate.service;
 
 import com.baskerville.toilocate.dto.ImageResponseDTO;
+import com.baskerville.toilocate.dto.RatingUpdateDTO;
+import com.baskerville.toilocate.dto.RatingUpdateResDTO;
 import com.baskerville.toilocate.dto.ResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
 import com.baskerville.toilocate.dto.ToiletSaveResDTO;
@@ -38,6 +40,6 @@ public interface ToiletService {
     @POST("add")
     Call<ToiletSaveResDTO> saveToilet(@Body ToiletDTO toiletDTO);
 
-
-
+    @POST("rate")
+    Call<RatingUpdateResDTO> rateToilet(@Body RatingUpdateDTO ratingUpdateDTO);
 }

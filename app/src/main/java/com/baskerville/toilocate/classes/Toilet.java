@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Toilet {
 
+    private String id;
     private String name;
     private LatLng location;
     private String gender;
@@ -27,6 +28,7 @@ public class Toilet {
     }
 
     public Toilet(ToiletDTO toiletDTO) {
+        this.id = toiletDTO.get_id();
         this.name = toiletDTO.getName();
         this.rating = Float.parseFloat(toiletDTO.getRating());
         this.gender = toiletDTO.getGender() == null ? "undefined" : toiletDTO.getGender();
@@ -36,6 +38,13 @@ public class Toilet {
         this.description = toiletDTO.getDescription();
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

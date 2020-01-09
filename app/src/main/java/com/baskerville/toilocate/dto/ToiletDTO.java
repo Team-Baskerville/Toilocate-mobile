@@ -6,12 +6,21 @@ import java.io.Serializable;
 
 public class ToiletDTO implements Serializable {
 
+    private String _id;
     private String name;
     private String rating;
     private String gender;
     private String imagePath;
     private LocationDTO location;
     private ToiletDescriptionDTO description;
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
 
     public String getName() {
         return name;
@@ -65,7 +74,9 @@ public class ToiletDTO implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("name: " + name).append(", rating: ").append(rating)
+        sb.append("name: ").append(name)
+                .append(", id: ").append(_id)
+                .append(", rating: ").append(rating)
                 .append(", gender: ").append(gender)
                 .append(", imagePath: ").append(imagePath)
                 .append(", location: ").append(location.toString())

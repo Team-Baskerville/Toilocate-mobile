@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class ToiletLiteDTO implements Serializable {
 
+    private String id;
     private String name;
     private String gender;
     private String imagePath;
@@ -16,11 +17,20 @@ public class ToiletLiteDTO implements Serializable {
     }
 
     public ToiletLiteDTO(Toilet toilet) {
+        this.id = toilet.getId();
         this.name = toilet.getName();
         this.gender = toilet.getGender();
         this.imagePath =  toilet.getImagePath();
         this.rating = toilet.getRating();
         this.description = toilet.getDescription();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
