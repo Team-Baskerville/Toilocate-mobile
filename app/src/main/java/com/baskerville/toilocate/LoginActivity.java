@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
-    Button b1, b2;
+    Button b1, b2, b3;
     EditText ed1, ed2;
 
     TextView tx1;
@@ -30,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
         b2 = (Button) findViewById(R.id.button2);
         tx1 = (TextView) findViewById(R.id.textView3);
         tx1.setVisibility(View.GONE);
+
+        b3 = (Button) findViewById(R.id.button3);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
