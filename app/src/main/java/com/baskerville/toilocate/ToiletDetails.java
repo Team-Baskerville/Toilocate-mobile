@@ -10,12 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.baskerville.toilocate.classes.Config;
+import com.baskerville.toilocate.dto.ToiletDescriptionDTO;
 import com.baskerville.toilocate.dto.ToiletLiteDTO;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ToiletDetails extends AppCompatActivity {
 
@@ -56,6 +59,12 @@ public class ToiletDetails extends AppCompatActivity {
     private void populateView() {
         RatingBar ratingBar = findViewById(R.id.ratingBarToiletDetails);
         TextView textViewGender = findViewById(R.id.textViewDetailsGender);
+        CircleImageView circleImageViewCommode = findViewById(R.id.imageDetailsCommode);
+        CircleImageView circleImageViewSquat = findViewById(R.id.imageDetailsSquat);
+        CircleImageView circleImageViewSink = findViewById(R.id.imageDetailsSink);
+        CircleImageView circleImageViewMirror = findViewById(R.id.imageDetailsMirror);
+        CircleImageView circleImageViewShower = findViewById(R.id.imageDetailsShower);
+        CircleImageView circleImageViewUrineTank = findViewById(R.id.imageDetailsUrineTank);
 
         toiletLiteDTO = (ToiletLiteDTO) getIntent().getSerializableExtra("toilet");
 
@@ -64,6 +73,20 @@ public class ToiletDetails extends AppCompatActivity {
             ratingBar.setRating(toiletLiteDTO.getRating());
             textViewGender.setText(String.format("%s TOILET",
                     toiletLiteDTO.getGender().toUpperCase()));
+            if(toiletLiteDTO.getDescription() != null){
+                ToiletDescriptionDTO descriptionDTO = toiletLiteDTO.getDescription();
+                if(descriptionDTO.isCommode()) {
+                    circleImageViewCommode.setImageResource(R.drawable.commode_true);
+                } else {
+                    circleImageViewCommode.setImageResource(R.drawable.commode_false);
+                }
+
+                if(descriptionDTO.isWaterSink()) {
+                    circleImageViewSink.setImageResource(R.drawable.sink_true);
+                } else {
+                    circleImageViewSink.setImageResource(R.drawable.sink_false);
+                }
+            }
         }
     }
 
