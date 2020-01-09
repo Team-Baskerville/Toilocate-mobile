@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.baskerville.toilocate.classes.Config;
-import com.baskerville.toilocate.classes.MockToilets;
 import com.baskerville.toilocate.classes.Toilet;
 import com.baskerville.toilocate.dto.ResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
+import com.baskerville.toilocate.dto.ToiletLiteDTO;
+import com.baskerville.toilocate.dto.ToiletSearchDTO;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -100,16 +102,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            adapter.notifyDataSetChanged();
             return;
         });
-
         linearLayoutRecycler = findViewById(R.id.linearLayoutRecycler);
 
+        ImageView imageViewUpDown = findViewById(R.id.imageViewUpDown);
         recyclerTitleText = findViewById(R.id.textViewRecyclerTitle);
         toiletCards = new ArrayList<>();
         recyclerTitleText.setOnClickListener(view -> {
             if (toiletCards.isEmpty()) {
                 toiletCards.addAll(nearbyToilets);
+                imageViewUpDown.setImageResource(R.drawable.down);
             } else {
                 toiletCards.clear();
+                imageViewUpDown.setImageResource(R.drawable.up);
+
             }
             adapter.notifyDataSetChanged();
         });
@@ -120,7 +125,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adapter = new Adapter(this, toiletCards);
         recyclerView.setAdapter(adapter);
 
-        getData();
 
         Log.i("Yo Chameera", "Yo yo");
     }
@@ -155,6 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 //        markNearbyToilets();
         updateLocationToArray(location);
+        getData();
     }
 
     @Override
@@ -217,7 +222,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle toiletDetailsBundle = new Bundle();
         toiletDetailsBundle.putString("name", ((Toilet) marker.getTag()).getName());
         Intent toiletDetailsIntent = new Intent(MapsActivity.this, ToiletDetails.class);
-        toiletDetailsIntent.putExtras(toiletDetailsBundle);
+     //   toiletDetailsIntent.putExtras(toiletDetailsBundle);
+        toiletDetailsIntent.putExtra("toilet", new ToiletLiteDTO((Toilet) marker.getTag()));
         startActivity(toiletDetailsIntent);
         return false;
     }
@@ -236,8 +242,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Toilet> toiletList = new ArrayList<>();
 
-        Call<ResponseDTO> getAllToiletsCall = toiletService.getAllToilets();
-        getAllToiletsCall.enqueue(new Callback<ResponseDTO>() {
+        Log.i("Yo Go", coordinates[1] + "," + coordinates[0]);
+
+        Call<ResponseDTO> getNearbyToiletsCall = toiletService.getNearbyToilets(new ToiletSearchDTO(
+                coordinates[1], coordinates[0], Config.MAX_DISTANCE
+        ));
+        getNearbyToiletsCall.enqueue(new Callback<ResponseDTO>() {
             @Override
             public void onResponse(Call<ResponseDTO> call, Response<ResponseDTO> response) {
 

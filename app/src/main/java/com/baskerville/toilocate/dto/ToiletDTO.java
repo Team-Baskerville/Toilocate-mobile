@@ -9,6 +9,7 @@ public class ToiletDTO implements Serializable {
     private String name;
     private String rating;
     private String gender;
+    private String imagePath;
     private LocationDTO location;
     private ToiletDescriptionDTO description;
 
@@ -52,12 +53,21 @@ public class ToiletDTO implements Serializable {
         this.gender = gender;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("name: " + name).append(", rating: ").append(rating)
                 .append(", gender: ").append(gender)
+                .append(", imagePath: ").append(imagePath)
                 .append(", location: ").append(location.toString())
                 .append(", description: ").append(description.toString());
         return sb.toString();

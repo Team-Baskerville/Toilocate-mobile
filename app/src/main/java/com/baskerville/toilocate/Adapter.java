@@ -9,9 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.classes.Toilet;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
@@ -32,11 +37,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+
+        String locationString = toilets.get(position).getLocation().latitude
+                + ", "+ toilets.get(position).getLocation().longitude;
+
         viewHolder.title.setText(toilets.get(position).getName());
         viewHolder.gender.setText(toilets.get(position).getGender());
-        viewHolder.rating.setText(Float.toString(toilets.get(position).getRating()));
-        viewHolder.location.setText(toilets.get(position).getLocation().latitude
-                + ", "+ toilets.get(position).getLocation().longitude);
+        viewHolder.rating.setText(String.valueOf(toilets.get(position).getRating()));
+        viewHolder.location.setText(locationString);
+        Glide.with(layoutInflater.getContext()).load(Config.BASE_URL+toilets.get(position)
+                .getImagePath())
+                .apply(new RequestOptions().override(200, 300))
+                .into(viewHolder.toiletImage);
     }
 
     @Override
@@ -47,6 +59,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView title, gender, rating, location;
+        CircleImageView toiletImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,6 +67,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             gender = itemView.findViewById(R.id.textViewCardGender);
             rating = itemView.findViewById(R.id.textViewCardRating);
             location = itemView.findViewById(R.id.textViewCardLocation);
+            toiletImage = itemView.findViewById(R.id.imageNearbyToilet);
 
         }
     }
