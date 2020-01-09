@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -101,16 +102,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            adapter.notifyDataSetChanged();
             return;
         });
-
         linearLayoutRecycler = findViewById(R.id.linearLayoutRecycler);
 
+        ImageView imageViewUpDown = findViewById(R.id.imageViewUpDown);
         recyclerTitleText = findViewById(R.id.textViewRecyclerTitle);
         toiletCards = new ArrayList<>();
         recyclerTitleText.setOnClickListener(view -> {
             if (toiletCards.isEmpty()) {
                 toiletCards.addAll(nearbyToilets);
+                imageViewUpDown.setImageResource(R.drawable.down);
             } else {
                 toiletCards.clear();
+                imageViewUpDown.setImageResource(R.drawable.up);
+
             }
             adapter.notifyDataSetChanged();
         });
