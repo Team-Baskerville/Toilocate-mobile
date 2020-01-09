@@ -37,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.IOException;
@@ -190,7 +191,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
             btnSubmitDialog.setOnClickListener(view1 -> {
                 toiletDTO.setRating(String.valueOf(toiletRating.getRating()));
-                saveNewToilet();
+                saveNewToilet(view);
                 dialog.dismiss();
             });
 
@@ -326,7 +327,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
     }
 
-    private void saveNewToilet() {
+    private void saveNewToilet(View view) {
         Log.i("Yo DTO so far", toiletDTO.toString());
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -373,7 +374,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
             public void onResponse(Call<ImageResponseDTO> call, Response<ImageResponseDTO> response) {
                 Log.d("Yo incoming", "Incoming:" + response.body().toString());
                 try {
-
                     String data = response.body().getPayload();
                     Log.i("Yo image res", "Image upload response received: " + data);
                     toiletDTO.setImagePath(data);
@@ -389,54 +389,32 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                                 Log.i("Yo yo save res", response.body().getMessage());
                                 Toast.makeText(AddToilet.this, response.body().getMessage(),
                                         Toast.LENGTH_SHORT).show();
+                                Snackbar sb = Snackbar.make(view, response.body().getMessage(),
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null);
+                                sb.addCallback(new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                                        onBackPressed();
+                                    }
+                                });
+                                sb.show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ToiletSaveResDTO> call, Throwable t) {
                             Log.i("Yo save error", t.getMessage());
-
+                            Snackbar.make(view,
+                                    "Failed to save new Toilet. Check your internet connection",
+                                    Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
                         }
                     });
-
-//                    callPlace.enqueue(new Callback<PlaceAddResponse>() {
-//                        @Override
-//                        public void onResponse(Call<PlaceAddResponse> call, Response<PlaceAddResponse> response) {
-//                            try {
-//                                Log.d("message", "Incoming:" + response.body().getMessage());
-////                                String[] data = response.body().getData();
-//                                Log.d(TAG, "Place add response received: " + response.body().getMessage());
-//
-//                                for (Fragment fragment : getFragmentManager().getFragments()) {
-//                                    getFragmentManager().beginTransaction().remove(fragment).commit();
-//                                }
-//
-//                                HomeFragment homeFragment = new HomeFragment();
-//                                BottomNavigationViewHelper.replaceFragment(getActivity(), homeFragment, R.id.relLayout2, false);
-//
-//
-//                            } catch (NullPointerException e) {
-//                                Log.d(TAG, e.getMessage());
-//                            }
-//
-////                for (Fragment fragment : getFragmentManager().getFragments()) {
-////                    getFragmentManager().beginTransaction().remove(fragment).commit();
-////                }
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<PlaceAddResponse> call, Throwable throwable) {
-//                            Log.e(TAG, throwable.toString());
-//                        }
-//                    });
-//
 
                 } catch (NullPointerException e) {
                     Log.i("Yo image error", e.getMessage());
                 }
-
             }
 
             @Override
