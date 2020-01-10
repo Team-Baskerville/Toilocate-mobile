@@ -29,6 +29,7 @@ import com.baskerville.toilocate.dto.ResponseDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
 import com.baskerville.toilocate.dto.ToiletLiteDTO;
 import com.baskerville.toilocate.dto.ToiletSearchDTO;
+import com.baskerville.toilocate.security.UserHandler;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -83,30 +84,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return;
         }
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return;
         }
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME,
                 MIN_DISTANCE, this);
 
+        setupAddToiletButton();
 
-        addToilet = findViewById(R.id.addToiletFab);
-        Bundle currentLocationBundle = new Bundle();
-        currentLocationBundle.putDoubleArray("coordinates", coordinates);
-        addToilet.setOnClickListener((view) -> {
-            Intent intent = new Intent(MapsActivity.this, AddToilet.class);
-            intent.putExtras(currentLocationBundle);
-            startActivity(intent);
-//            nearbyToilets.remove(0);
-//            adapter.notifyDataSetChanged();
-            return;
-        });
         linearLayoutRecycler = findViewById(R.id.linearLayoutRecycler);
 
         ImageView imageViewUpDown = findViewById(R.id.imageViewUpDown);
@@ -144,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (!isLocationServiceAvailable()) {
             buildAlertMessage(Config.NO_GPS_MESSAGE, MobileServiceEnum.LOCATION, false);
         }
-        if(!isNetworkAvailable()){
+        if (!isNetworkAvailable()) {
             buildAlertMessage(Config.NO_INTERNET_MESSAGE, MobileServiceEnum.INTERNET, true);
         }
     }
@@ -243,6 +232,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             startActivity(toiletDetailsIntent);
         }
         return false;
+    }
+
+    private void setupAddToiletButton() {
+        addToilet = findViewById(R.id.addToiletFab);
+        Bundle currentLocationBundle = new Bundle();
+        currentLocationBundle.putDoubleArray("coordinates", coordinates);
+        addToilet.setOnClickListener((view) -> {
+            if (UserHandler.getUser() != null) {
+                Intent addToiletIntent = new Intent(MapsActivity.this, AddToilet.class);
+                addToiletIntent.putExtras(currentLocationBundle);
+                startActivity(addToiletIntent);
+//            nearbyToilets.remove(0);
+//            adapter.notifyDataSetChanged();
+            } else {
+                Intent loginIntent = new Intent(MapsActivity.this, LoginActivity.class);
+                loginIntent.putExtras(currentLocationBundle);
+                startActivity(loginIntent);
+            }
+        });
     }
 
     private void getData() {
