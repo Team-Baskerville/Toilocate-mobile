@@ -65,24 +65,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:text="Rating"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageNearbyToilet"
                 app:layout_constraintTop_toBottomOf="@+id/textViewCardGender" />
 
-            <TextView
-                android:id="@+id/textViewCardLocation"
-                android:layout_width="0dp"
+            <RatingBar
+                android:id="@+id/ratingBarCard"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Location"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageNearbyToilet"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCardRating" />
+                android:isIndicator="true"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewCardRating"
+                app:layout_constraintStart_toEndOf="@+id/textViewCardRating" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
