@@ -28,7 +28,7 @@
     <EditText
         android:layout_width = "wrap_content"
         android:layout_height = "wrap_content"
-        android:id = "@+id/editText"
+        android:id = "@+id/editTextLoginEmail"
         android:hint = "Enter Email"
         android:focusable = "true"
         android:textColorHighlight = "#ff7eff15"
@@ -53,12 +53,12 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
+        android:id="@+id/editTextLoginPassword"
+        android:layout_below="@+id/editTextLoginEmail"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText"
+        android:layout_alignRight="@+id/editTextLoginEmail"
+        android:layout_alignEnd="@+id/editTextLoginEmail"
         android:textColorHint="#ffff299f"
         android:hint="Password" />
 
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:text="Attempts Left:"
         android:id="@+id/textView2"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/editTextLoginPassword"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textSize="25dp" />
@@ -86,7 +86,7 @@
         android:layout_toRightOf="@+id/textview" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -110,7 +110,7 @@
         android:text="Cancel" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

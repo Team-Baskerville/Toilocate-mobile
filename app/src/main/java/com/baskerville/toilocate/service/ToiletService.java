@@ -1,6 +1,8 @@
 package com.baskerville.toilocate.service;
 
+import com.baskerville.toilocate.dto.CredentialDTO;
 import com.baskerville.toilocate.dto.ImageResponseDTO;
+import com.baskerville.toilocate.dto.LoginResDTO;
 import com.baskerville.toilocate.dto.RatingUpdateDTO;
 import com.baskerville.toilocate.dto.RatingUpdateResDTO;
 import com.baskerville.toilocate.dto.ResponseDTO;
@@ -9,11 +11,8 @@ import com.baskerville.toilocate.dto.ToiletSaveResDTO;
 import com.baskerville.toilocate.dto.ToiletSearchDTO;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -42,4 +41,7 @@ public interface ToiletService {
 
     @POST("rate")
     Call<RatingUpdateResDTO> rateToilet(@Body RatingUpdateDTO ratingUpdateDTO);
+
+    @POST("login")
+    Call<LoginResDTO> login(@Body CredentialDTO credentialDTO);
 }
