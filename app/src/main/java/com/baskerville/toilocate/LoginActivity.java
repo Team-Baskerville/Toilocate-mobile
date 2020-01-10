@@ -1,6 +1,5 @@
 package com.baskerville.toilocate;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.baskerville.toilocate.classes.Config;
 import com.baskerville.toilocate.dto.CredentialDTO;
 import com.baskerville.toilocate.dto.LoginResDTO;
-import com.baskerville.toilocate.interfaces.DialogCloseListener;
 import com.baskerville.toilocate.security.User;
 import com.baskerville.toilocate.security.UserHandler;
 import com.baskerville.toilocate.service.ToiletService;
@@ -27,7 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginActivity extends AppCompatActivity implements DialogCloseListener {
+public class LoginActivity extends AppCompatActivity {
     Button loginButton, b2, signUpButton;
     EditText emailEditText, passwordEditText;
     TextView tx1;
@@ -140,9 +138,5 @@ public class LoginActivity extends AppCompatActivity implements DialogCloseListe
     private void openSignUpDialog() {
         DialogSignup dialogSignup = new DialogSignup();
         dialogSignup.show(getSupportFragmentManager(), "signup dialog");
-    }
-
-    @Override
-    public void handleDialogClose(DialogInterface dialog, boolean success) {
     }
 }

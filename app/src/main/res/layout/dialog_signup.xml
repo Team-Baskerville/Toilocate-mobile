@@ -21,16 +21,17 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/username" />
+
     <EditText
         android:id="@+id/editTextRegEmail"
-        android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="@string/userEmail" />
+        android:hint="@string/userEmail"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/editTextRegPassword"
@@ -64,4 +65,11 @@
         android:text="Passwords does not match"
         android:textColor="#C62828"
         android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Sign Up" />
 </LinearLayout>
