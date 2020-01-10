@@ -1,13 +1,11 @@
 package com.baskerville.toilocate;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,26 +24,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
-    Button loginButton, b2, signUpButton;
+    Button loginButton, signUpButton;
     EditText emailEditText, passwordEditText;
-    TextView tx1;
-    int counter = 3;
+
     private Retrofit retrofit = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Add Toilet");
 
-        loginButton = (Button) findViewById(R.id.buttonLogin);
-        signUpButton = (Button) findViewById(R.id.buttonSignUp);
+        loginButton = findViewById(R.id.buttonLogin);
+        signUpButton = findViewById(R.id.buttonSignUp);
 
-        emailEditText = (EditText) findViewById(R.id.editTextLoginEmail);
-        passwordEditText = (EditText) findViewById(R.id.editTextLoginPassword);
-
-        b2 = (Button) findViewById(R.id.button2);
-        tx1 = (TextView) findViewById(R.id.textView3);
-        tx1.setVisibility(View.GONE);
+        emailEditText = findViewById(R.id.editTextLoginEmail);
+        passwordEditText = findViewById(R.id.editTextLoginPassword);
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(getApplicationContext(), "Wrong Credentials",
                                         Toast.LENGTH_SHORT).show();
-                                tx1.setVisibility(View.VISIBLE);
-                                tx1.setBackgroundColor(Color.RED);
-                                counter--;
-                                tx1.setText(Integer.toString(counter));
-
-                                if (counter == 0) {
-                                    loginButton.setEnabled(false);
-                                }
                             }
                         }
 
@@ -120,19 +108,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        signUpButton.setOnClickListener(v -> openSignUpDialog());
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSignUpDialog();
-            }
-        });
+        Toast.makeText(this, "Login or sign-up to add a new toilet", Toast.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void openSignUpDialog() {
