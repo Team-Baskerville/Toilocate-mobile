@@ -389,8 +389,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
                             if (response.isSuccessful()) {
                                 Log.i("Yo yo save res", response.body().getMessage());
-                                Toast.makeText(AddToilet.this, response.body().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
                                 Snackbar sb = Snackbar.make(view, response.body().getMessage(),
                                         Snackbar.LENGTH_LONG)
                                         .setAction("Action", null);
