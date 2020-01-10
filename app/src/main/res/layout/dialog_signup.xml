@@ -10,8 +10,9 @@
 <!--        android:scaleType="center"-->
 <!--        android:background="#FFFFBB33"-->
 <!--        android:contentDescription="@string/app_name" />-->
+
     <EditText
-        android:id="@+id/userName"
+        android:id="@+id/editTextRegUserName"
         android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
         android:layout_marginBottom="4dp"
         android:hint="@string/username" />
     <EditText
-        android:id="@+id/userEmail"
+        android:id="@+id/editTextRegEmail"
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,15 +31,37 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/userEmail" />
+
     <EditText
-        android:id="@+id/password"
-        android:inputType="textPassword"
+        android:id="@+id/editTextRegPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif"
-        android:hint="@string/password"/>
+        android:hint="@string/password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/editTextRegRePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif"
+        android:hint="@string/rePassword"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/textViewRegPassMiss"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:text="Passwords does not match"
+        android:textColor="#C62828"
+        android:visibility="invisible"/>
 </LinearLayout>

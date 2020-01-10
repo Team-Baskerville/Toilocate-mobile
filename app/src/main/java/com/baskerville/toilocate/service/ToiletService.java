@@ -44,4 +44,7 @@ public interface ToiletService {
 
     @POST("login")
     Call<LoginResDTO> login(@Body CredentialDTO credentialDTO);
+
+    @POST("signup")
+    Call<LoginResDTO> signUp(@Body CredentialDTO credentialDTO);
 }
