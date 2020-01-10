@@ -9,4 +9,8 @@ public class Config {
     public static int DIST_EXPANSION_STEP = 100;
 
     public static String TEST_IMG_URL = "https://homepages.cae.wisc.edu/~ece533/images/airplane.png";
+
+    public static String NO_INTERNET_MESSAGE = "Network Connection is Not Available";
+
+    public static String NO_GPS_MESSAGE = "GPS is Not Enabled. Enable now?";
 }

@@ -2,17 +2,22 @@ package com.baskerville.toilocate;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -110,7 +115,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerTitleText.setOnClickListener(view -> {
             if (toiletCards.isEmpty()) {
                 toiletCards.addAll(nearbyToilets);
-                imageViewUpDown.setImageResource(R.drawable.down);
+                if (!toiletCards.isEmpty()) {
+                    imageViewUpDown.setImageResource(R.drawable.down);
+                }
             } else {
                 toiletCards.clear();
                 imageViewUpDown.setImageResource(R.drawable.up);
@@ -129,6 +136,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("Yo Chameera", "Yo yo");
     }
 
+    ;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isLocationServiceAvailable()) {
+            buildAlertMessage(Config.NO_GPS_MESSAGE, MobileServiceEnum.LOCATION, false);
+        }
+        if(!isNetworkAvailable()){
+            buildAlertMessage(Config.NO_INTERNET_MESSAGE, MobileServiceEnum.INTERNET, true);
+        }
+    }
 
     /**
      * Manipulates the map once available.
@@ -142,22 +161,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (!isLocationServiceAvailable()) {
+            buildAlertMessage(Config.NO_GPS_MESSAGE, MobileServiceEnum.LOCATION, false);
+        }
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setMyLocationEnabled(true);
         mMap.setOnMarkerClickListener(this);
 
     }
 
-
     @Override
     public void onLocationChanged(Location location) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
+                location.getLongitude())));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-//        markNearbyToilets();
         updateLocationToArray(location);
         getData();
     }
@@ -219,16 +236,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Bundle toiletDetailsBundle = new Bundle();
-        toiletDetailsBundle.putString("name", ((Toilet) marker.getTag()).getName());
-        Intent toiletDetailsIntent = new Intent(MapsActivity.this, ToiletDetails.class);
-     //   toiletDetailsIntent.putExtras(toiletDetailsBundle);
-        toiletDetailsIntent.putExtra("toilet", new ToiletLiteDTO((Toilet) marker.getTag()));
-        startActivity(toiletDetailsIntent);
+        if (marker.getTag() != null) {
+            Intent toiletDetailsIntent =
+                    new Intent(MapsActivity.this, ToiletDetails.class);
+            toiletDetailsIntent.putExtra("toilet", new ToiletLiteDTO((Toilet) marker.getTag()));
+            startActivity(toiletDetailsIntent);
+        }
         return false;
     }
 
     private void getData() {
+
+        if (!isNetworkAvailable()) {
+            buildAlertMessage(Config.NO_INTERNET_MESSAGE, MobileServiceEnum.INTERNET, true);
+        }
+
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Config.BASE_URL)
@@ -267,17 +289,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                toiletCards.addAll(nearbyToilets);
 //                adapter.notifyDataSetChanged();
                 Log.i("Yo Response", response.body().getPayload().toString());
-
             }
 
             @Override
             public void onFailure(Call<ResponseDTO> call, Throwable t) {
                 Log.i("Yo Response", t.getMessage());
-
-
             }
         });
-
-
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private boolean isLocationServiceAvailable() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private void buildAlertMessage(String message, MobileServiceEnum serviceType, boolean cancelable) {
+        AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
+                .setCancelable(cancelable)
+                .create();
+        alertDialog.setTitle("Cannot Load Results");
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (serviceType == MobileServiceEnum.LOCATION
+                                && !isLocationServiceAvailable()) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private enum MobileServiceEnum {LOCATION, INTERNET}
 }
