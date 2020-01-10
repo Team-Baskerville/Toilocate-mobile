@@ -144,6 +144,5 @@ public class LoginActivity extends AppCompatActivity implements DialogCloseListe
 
     @Override
     public void handleDialogClose(DialogInterface dialog, boolean success) {
-        Toast.makeText(this, "Dialog sense", Toast.LENGTH_SHORT).show();
     }
 }
