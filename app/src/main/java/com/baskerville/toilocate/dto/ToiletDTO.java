@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class ToiletDTO implements Serializable {
 
     private String _id;
+    private String userId;
     private String name;
     private String rating;
     private String gender;
@@ -20,6 +21,14 @@ public class ToiletDTO implements Serializable {
 
     public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -76,6 +85,7 @@ public class ToiletDTO implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("name: ").append(name)
                 .append(", id: ").append(_id)
+                .append(", userId: ").append(userId)
                 .append(", rating: ").append(rating)
                 .append(", gender: ").append(gender)
                 .append(", imagePath: ").append(imagePath)

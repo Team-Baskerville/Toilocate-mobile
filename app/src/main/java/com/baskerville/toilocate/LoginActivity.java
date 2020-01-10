@@ -84,10 +84,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<LoginResDTO> call, Response<LoginResDTO> response) {
                             if (response.isSuccessful()) {
+                                Log.i("Yo Login res", response.body().getUser().toString());
                                 User user = response.body().getUser();
                                 UserHandler.setUser(user);
                                 Toast.makeText(LoginActivity.this,
-                                        "Welcome "+user.getName(),
+                                        "Welcome " + user.getName(),
                                         Toast.LENGTH_SHORT).show();
 
                                 Intent intent =
@@ -99,6 +100,14 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(getApplicationContext(), "Wrong Credentials",
                                         Toast.LENGTH_SHORT).show();
+                                tx1.setVisibility(View.VISIBLE);
+                                tx1.setBackgroundColor(Color.RED);
+                                counter--;
+                                tx1.setText(Integer.toString(counter));
+
+                                if (counter == 0) {
+                                    loginButton.setEnabled(false);
+                                }
                             }
                         }
 
@@ -108,15 +117,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-
-                    tx1.setVisibility(View.VISIBLE);
-                    tx1.setBackgroundColor(Color.RED);
-                    counter--;
-                    tx1.setText(Integer.toString(counter));
-
-                    if (counter == 0) {
-                        loginButton.setEnabled(false);
-                    }
                 }
             }
         });

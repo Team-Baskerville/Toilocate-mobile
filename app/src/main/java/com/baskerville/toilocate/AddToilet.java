@@ -29,6 +29,7 @@ import com.baskerville.toilocate.dto.LocationDTO;
 import com.baskerville.toilocate.dto.ToiletDTO;
 import com.baskerville.toilocate.dto.ToiletDescriptionDTO;
 import com.baskerville.toilocate.dto.ToiletSaveResDTO;
+import com.baskerville.toilocate.security.UserHandler;
 import com.baskerville.toilocate.service.ToiletService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -323,7 +324,9 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                 squat.isChecked(), commode.isChecked());
         toiletDTO.setDescription(descriptionDTO);
 
-
+        if(UserHandler.getUser() != null && UserHandler.getUser().getId() != null) {
+            toiletDTO.setUserId(UserHandler.getUser().getId());
+        }
     }
 
     private void saveNewToilet(View view) {

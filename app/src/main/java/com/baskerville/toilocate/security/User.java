@@ -3,16 +3,16 @@ package com.baskerville.toilocate.security;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private String _id;
+    private String id;
     private String name;
     private String email;
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -34,7 +34,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "_id='" + _id + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
