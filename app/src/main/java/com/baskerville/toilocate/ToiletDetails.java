@@ -53,7 +53,7 @@ public class ToiletDetails extends AppCompatActivity {
         Log.i("Toilet ID", toiletLiteDTO.getId());
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
-//        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
+
 
         toiletImageView = findViewById(R.id.toolbarImageDetails);
         Glide.with(this).load(Config.BASE_URL + toiletLiteDTO.getImagePath())

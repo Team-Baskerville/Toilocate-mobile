@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -106,6 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toiletCards.addAll(nearbyToilets);
                 if (!toiletCards.isEmpty()) {
                     imageViewUpDown.setImageResource(R.drawable.down);
+                    Toast.makeText(this,"No nearby Toilets found", Toast.LENGTH_SHORT);
                 }
             } else {
                 toiletCards.clear();
@@ -240,8 +242,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent addToiletIntent = new Intent(MapsActivity.this, AddToilet.class);
                 addToiletIntent.putExtras(currentLocationBundle);
                 startActivity(addToiletIntent);
-//            nearbyToilets.remove(0);
-//            adapter.notifyDataSetChanged();
+
             } else {
                 Intent loginIntent = new Intent(MapsActivity.this, LoginActivity.class);
                 loginIntent.putExtras(currentLocationBundle);

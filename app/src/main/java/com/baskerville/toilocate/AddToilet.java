@@ -114,8 +114,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         fabTakePhoto = findViewById(R.id.fabPhoto);
         fabTakePhoto.setOnClickListener(view -> {
             //submit data or take photograph
-//            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            startActivityForResult(camera_intent, pic_id);
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
@@ -245,8 +243,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
-        //map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-        //map.setMyLocationEnabled(true);
         map.addMarker(new MarkerOptions().position(new LatLng(lastCoordinates[0], lastCoordinates[1])).title("New Toilet"));
         map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastCoordinates[0], lastCoordinates[1])));
         Log.i("Move camera", lastCoordinates[0] + ", " + lastCoordinates[1]);
@@ -349,8 +345,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                     .setMaxHeight(480)
                     .setQuality(75)
                     .setCompressFormat(Bitmap.CompressFormat.WEBP)
-                    //                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                    //                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
                     .compressToFile(file1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -360,12 +354,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         // Create MultipartBody.Part using file request-body,file name and part name
         MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
-//        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), toiletDTO.getName());
 
-
-//        Uri photoURI = FileProvider.getUriForFile(this.getContext(),
-//                "com.watson.android.fileprovider",
-//                file);
 
         Call<ImageResponseDTO> call = toiletService.uploadImage(part, toiletDTO.getName());
         Log.i("Compose Request", "Request name: " + toiletDTO.getName());
