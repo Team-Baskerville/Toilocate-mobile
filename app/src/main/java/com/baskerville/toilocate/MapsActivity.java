@@ -120,9 +120,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter(this, toiletCards);
         recyclerView.setAdapter(adapter);
-
-
-        Log.i("Yo Chameera", "Yo yo");
     }
 
     ;
@@ -267,12 +264,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         ToiletService toiletService = retrofit.create(ToiletService.class);
 
-        Log.i("Yo Friend", "yum yum");
-
 
         List<Toilet> toiletList = new ArrayList<>();
 
-        Log.i("Yo Go", coordinates[1] + "," + coordinates[0]);
+        Log.i("Coordinators", coordinates[1] + "," + coordinates[0]);
 
         Call<ResponseDTO> getNearbyToiletsCall = toiletService.getNearbyToilets(new ToiletSearchDTO(
                 coordinates[1], coordinates[0], Config.MAX_DISTANCE
@@ -282,7 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onResponse(Call<ResponseDTO> call, Response<ResponseDTO> response) {
 
                 if (!response.isSuccessful()) {
-                    Log.i("Yo Response", Integer.toString(response.code()));
+                    Log.i("Nearby Response", Integer.toString(response.code()));
                     return;
                 }
 
@@ -294,14 +289,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 markNearbyToilets();
                 toiletCards.clear();
-//                toiletCards.addAll(nearbyToilets);
-//                adapter.notifyDataSetChanged();
-                Log.i("Yo Response", response.body().getPayload().toString());
+
+                Log.i("Response", response.body().getPayload().toString());
             }
 
             @Override
             public void onFailure(Call<ResponseDTO> call, Throwable t) {
-                Log.i("Yo Response", t.getMessage());
+                Log.i("Response", t.getMessage());
             }
         });
     }

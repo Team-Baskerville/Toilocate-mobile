@@ -50,7 +50,7 @@ public class ToiletDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         toiletLiteDTO = (ToiletLiteDTO) getIntent().getSerializableExtra("toilet");
-        Log.i("Yo Toilet ID", toiletLiteDTO.getId());
+        Log.i("Toilet ID", toiletLiteDTO.getId());
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
 //        toolbarLayout.setTitle(getIntent().getExtras().getString("name"));
@@ -75,13 +75,13 @@ public class ToiletDetails extends AppCompatActivity {
         CircleImageView circleImageViewShower = findViewById(R.id.imageDetailsShower);
         CircleImageView circleImageViewUrineTank = findViewById(R.id.imageDetailsUrineTank);
 
-        Log.i("Yo Toilet details ", toiletLiteDTO.getDescription().toString());
+        Log.i("Toilet details ", toiletLiteDTO.getDescription().toString());
 
         if (toiletLiteDTO != null) {
             toolbarLayout.setTitle(toiletLiteDTO.getName());
             ratingBar.setRating(toiletLiteDTO.getRating());
-            Log.i("Yo Unformatted Rating", String.valueOf(toiletLiteDTO.getRating()));
-            Log.i("Yo Formatted Rating", String.valueOf(ratingBar.getRating()));
+            Log.i("Unformatted Rating", String.valueOf(toiletLiteDTO.getRating()));
+            Log.i("Formatted Rating", String.valueOf(ratingBar.getRating()));
             textViewGender.setText(String.format("%s TOILET",
                     toiletLiteDTO.getGender().toUpperCase()));
             if (toiletLiteDTO.getDescription() != null) {
@@ -169,7 +169,7 @@ public class ToiletDetails extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<RatingUpdateResDTO> call, Throwable t) {
-                        Log.i("Yo Update Rating", t.getMessage());
+                        Log.i("Update Rating", t.getMessage());
                         Snackbar.make(view, "Rating update failed! Check your network connection."
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();

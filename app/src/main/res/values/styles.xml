@@ -6,6 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
+        <item name="android:textSize">22dp</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +22,15 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="CustomButtonPositive">
+        <item name="android:background">@drawable/custom_btn_positive</item>
+        <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="CustomButtonNegative">
+        <item name="android:background">@drawable/custom_btn_negative</item>
+        <item name="android:textColor">#FFF</item>
+    </style>
 
 </resources>

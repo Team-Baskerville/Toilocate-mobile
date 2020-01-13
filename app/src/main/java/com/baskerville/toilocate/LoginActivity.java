@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                     credentialDTO.setEmail(emailEditText.getText().toString());
                     credentialDTO.setPassword(passwordEditText.getText().toString());
 
-                    Log.i("Yo login cred", credentialDTO.toString());
+                    Log.i("Login cred", credentialDTO.toString());
 
                     Call<LoginResDTO> loginResCall = toiletService.login(credentialDTO);
 
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<LoginResDTO> call, Response<LoginResDTO> response) {
                             if (response.isSuccessful()) {
-                                Log.i("Yo Login res", response.body().getUser().toString());
+                                Log.i("Login res", response.body().getUser().toString());
                                 User user = response.body().getUser();
                                 UserHandler.setUser(user);
                                 Toast.makeText(LoginActivity.this,

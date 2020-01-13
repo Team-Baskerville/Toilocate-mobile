@@ -330,7 +330,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void saveNewToilet(View view) {
-        Log.i("Yo DTO so far", toiletDTO.toString());
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Config.BASE_URL)
@@ -374,12 +373,11 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
         call.enqueue(new Callback<ImageResponseDTO>() {
             @Override
             public void onResponse(Call<ImageResponseDTO> call, Response<ImageResponseDTO> response) {
-                Log.d("Yo incoming", "Incoming:" + response.body().toString());
+
                 try {
                     String data = response.body().getPayload();
-                    Log.i("Yo image res", "Image upload response received: " + data);
+
                     toiletDTO.setImagePath(data);
-                    Log.i("Yo DTO so so far", toiletDTO.toString());
 
                     Call<ToiletSaveResDTO> toiletSaveCall = toiletService.saveToilet(toiletDTO);
                     toiletSaveCall.enqueue(new Callback<ToiletSaveResDTO>() {
@@ -388,7 +386,6 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                                                Response<ToiletSaveResDTO> response) {
 
                             if (response.isSuccessful()) {
-                                Log.i("Yo yo save res", response.body().getMessage());
                                 Snackbar sb = Snackbar.make(view, response.body().getMessage(),
                                         Snackbar.LENGTH_LONG)
                                         .setAction("Action", null);
@@ -404,7 +401,7 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
 
                         @Override
                         public void onFailure(Call<ToiletSaveResDTO> call, Throwable t) {
-                            Log.i("Yo save error", t.getMessage());
+
                             Snackbar.make(view,
                                     "Failed to save new Toilet. Check your internet connection",
                                     Snackbar.LENGTH_LONG)
@@ -413,13 +410,13 @@ public class AddToilet extends AppCompatActivity implements OnMapReadyCallback {
                     });
 
                 } catch (NullPointerException e) {
-                    Log.i("Yo image error", e.getMessage());
+                    Log.i("Image load error", e.getMessage());
                 }
             }
 
             @Override
             public void onFailure(Call<ImageResponseDTO> call, Throwable throwable) {
-                Log.e("Yo image upload fail", throwable.toString());
+                Log.e("Image upload fail", throwable.toString());
             }
         });
     }
